@@ -1,32 +1,47 @@
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Ładowanie PDF...</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        margin-top: 100px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Twój plik jest już prawie gotowy...</h1>
-    <p>Za chwilę nastąpi przekierowanie ⏳</p>
-    <script>
-      const params = new URLSearchParams(window.location.search);
-      const pdfLink = params.get("pdf");
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Twoje Insighty</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    .error { color: red; font-size: 24px; }
+  </style>
+</head>
+<body>
+  <h1>Ładujemy insighty...</h1>
+  <p>Chwileczkę, trwa generowanie PDF...</p>
 
-      if (pdfLink) {
-        setTimeout(() => {
-          window.location.href = decodeURIComponent(pdfLink);
-        }, 1500);
-      } else {
-        document.body.innerHTML =
-          "<h1 style='color:red'>Brakuje linku do PDF 😢</h1><p>Spróbuj ponownie.</p>";
+  <script>
+    async function start() {
+      const params = new URLSearchParams(window.location.search);
+      const submissionId = params.get('submissionId');
+
+      if (!submissionId) {
+        document.body.innerHTML = '<p class="error">Brakuje submissionId w linku 😕</p>';
+        return;
       }
-    </script>
-  </body>
+
+      try {
+        const response = await fetch("https://hook.eu2.make.com/hcvnxuc2m7xxjtvfdbkblyj5peltcd1m", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ submissionId })
+        });
+
+        const data = await response.json();
+        if (data && data.pdfLink) {
+          window.location.href = data.pdfLink;
+        } else {
+          document.body.innerHTML = '<p class="error">Nie udało się pobrać PDF-a 😢</p>';
+        }
+      } catch (error) {
+        document.body.innerHTML = '<p class="error">Błąd połączenia z serwerem ⚠️</p>';
+      }
+    }
+
+    start();
+  </script>
+</body>
 </html>
