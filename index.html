@@ -1,21 +1,67 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Przekierowanie...</title>
-    <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const submissionId = urlParams.get("submissionId");
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Twój PDF z insightami</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 100px;
+    }
+    #loading {
+      font-size: 1.5em;
+    }
+    #error {
+      color: red;
+      display: none;
+    }
+    #link {
+      margin-top: 30px;
+      display: none;
+    }
+    a.button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading">Generuję Twój plik PDF...</div>
+  <div id="error">Coś poszło nie tak 😢 Spróbuj ponownie później.</div>
+  <div id="link">
+    <a id="pdfLink" class="button" href="#" target="_blank">Pobierz PDF</a>
+  </div>
 
-      if (submissionId) {
-        // Przekierowanie do webhooka Make, który zwróci link do PDF
-        window.location.href = `https://hook.eu2.make.com/hcvnxuc2m7xxjtvfdbkblyj5peltcd1m?submissionId=${submissionId}`;
-      } else {
-        document.write("Brak submissionId w URL.");
-      }
-    </script>
-  </head>
-  <body>
-    <p>Trwa przekierowywanie...</p>
-  </body>
+  <script>
+    const submissionId = new URLSearchParams(window.location.search).get('submissionId');
+
+    if (!submissionId) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').textContent = 'Brakuje submissionId w linku';
+      document.getElementById('error').style.display = 'block';
+    } else {
+      fetch("https://hook.eu2.make.com/hcvnxuc2m7xxjtvfdbkblyj5peltcd1m", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ submissionId })
+      })
+      .then(response => response.text())
+      .then(link => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('pdfLink').href = link;
+        document.getElementById('link').style.display = 'block';
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      });
+    }
+  </script>
+</body>
 </html>
