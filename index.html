@@ -1,67 +1,32 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <title>Twój PDF z insightami</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 100px;
-    }
-    #loading {
-      font-size: 1.5em;
-    }
-    #error {
-      color: red;
-      display: none;
-    }
-    #link {
-      margin-top: 30px;
-      display: none;
-    }
-    a.button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 24px;
-      text-decoration: none;
-      font-size: 18px;
-      border-radius: 6px;
-    }
-  </style>
-</head>
-<body>
-  <div id="loading">Generuję Twój plik PDF...</div>
-  <div id="error">Coś poszło nie tak 😢 Spróbuj ponownie później.</div>
-  <div id="link">
-    <a id="pdfLink" class="button" href="#" target="_blank">Pobierz PDF</a>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ładowanie PDF...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        margin-top: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Twój plik jest już prawie gotowy...</h1>
+    <p>Za chwilę nastąpi przekierowanie ⏳</p>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const pdfLink = params.get("pdf");
 
-  <script>
-    const submissionId = new URLSearchParams(window.location.search).get('submissionId');
-
-    if (!submissionId) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('error').textContent = 'Brakuje submissionId w linku';
-      document.getElementById('error').style.display = 'block';
-    } else {
-      fetch("https://hook.eu2.make.com/hcvnxuc2m7xxjtvfdbkblyj5peltcd1m", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ submissionId })
-      })
-      .then(response => response.text())
-      .then(link => {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('pdfLink').href = link;
-        document.getElementById('link').style.display = 'block';
-      })
-      .catch(error => {
-        console.error(error);
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').style.display = 'block';
-      });
-    }
-  </script>
-</body>
+      if (pdfLink) {
+        // opóźnienie tylko po to, by użytkownik coś zobaczył
+        setTimeout(() => {
+          window.location.href = decodeURIComponent(pdfLink);
+        }, 1500);
+      } else {
+        document.body.innerHTML = "<h1>Brak linku do PDF 😢</h1><p>Spróbuj ponownie później.</p>";
+      }
+    </script>
+  </body>
 </html>
