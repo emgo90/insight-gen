@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dziękujemy!</title>
-  <meta http-equiv="refresh" content="0;url=https://docs.google.com/feeds/download/documents/export/Export?id={{submissionId}}&exportFormat=pdf" />
-</head>
-<body>
-  <p>Przekierowujemy do Twojego pliku PDF...</p>
-</body>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Przekierowanie...</title>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const submissionId = urlParams.get("submissionId");
+
+      if (submissionId) {
+        // Przekierowanie do webhooka Make, który zwróci link do PDF
+        window.location.href = `https://hook.eu2.make.com/hcvnxuc2m7xxjtvfdbkblyj5peltcd1m?submissionId=${submissionId}`;
+      } else {
+        document.write("Brak submissionId w URL.");
+      }
+    </script>
+  </head>
+  <body>
+    <p>Trwa przekierowywanie...</p>
+  </body>
 </html>
