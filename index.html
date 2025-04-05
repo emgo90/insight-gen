@@ -20,12 +20,12 @@
       const pdfLink = params.get("pdf");
 
       if (pdfLink) {
-        // opóźnienie tylko po to, by użytkownik coś zobaczył
         setTimeout(() => {
           window.location.href = decodeURIComponent(pdfLink);
         }, 1500);
       } else {
-        document.body.innerHTML = "<h1>Brak linku do PDF 😢</h1><p>Spróbuj ponownie później.</p>";
+        document.body.innerHTML =
+          "<h1 style='color:red'>Brakuje linku do PDF 😢</h1><p>Spróbuj ponownie.</p>";
       }
     </script>
   </body>
